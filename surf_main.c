@@ -2,27 +2,45 @@
 #include <stdio.h>
 #include <string.h>
 
-typedef struct NO{
+typedef struct NO_LISTA{
 
     //dados da aplicacao
     int code_product;
     char * tipo_produto;
     char * descricao;
     float preco;
-    //mecanismo de uniao de nos
-    struct NO * prox;
-    struct NO *ant;
-}NO;
+    //mecanismo de uniao de NO_LISTAs
+    struct NO_LISTA * prox;
+    struct NO_LISTA *ant;
+}NO_LISTA;
 
-NO *inicio = NULL;
-NO *fim = NULL;
+NO_LISTA *inicio = NULL;
+NO_LISTA *fim = NULL;
+int tam = 0;
+
+//==================================================
+
+typedef struct NO_FILA{
+
+    //dados da aplicacao
+    int code_product;
+    char * tipo_produto;
+    char * descricao;
+    float preco;
+    //mecanismo de uniao de NO_LISTAs
+    struct NO_FILA * prox;
+
+}NO_FILA;
+
+NO_FILA *inicio_fila = NULL;
+NO_FILA *fim_fila  = NULL;
 int tam = 0;
 
 void add(int code_product, char * tipo_produto, char * descricao, float preco){
    
     if(preco >= 0){
 
-        NO * novo = malloc(sizeof(NO));
+        NO_LISTA * novo = malloc(sizeof(NO_LISTA));
         novo->code_product = code_product;
         novo->tipo_produto = tipo_produto;
         novo->descricao = descricao;
@@ -52,7 +70,7 @@ void add(int code_product, char * tipo_produto, char * descricao, float preco){
                 tam++;
             }else{
                 //meio ...
-                NO* aux = inicio;
+                NO_LISTA* aux = inicio;
                 while(aux->prox != NULL && aux->preco <= novo->preco){
                     aux = aux->prox;
                 }
@@ -83,8 +101,8 @@ void imprimir(){
 }
 
 // Funcao para comprar um produto atraves do codigo - Remove da lista e retorna os dados
-NO* comprar(int code_product){
-    NO *aux = inicio;
+NO_LISTA* comprar(int code_product){
+    NO_LISTA *aux = inicio;
     
     // Procura o produto pelo codigo
     while(aux != NULL){
@@ -122,7 +140,7 @@ void remover(int cod){
     if(cod >= 0 && cod < tam){
 
         if(cod == 0){ //inicio
-            NO *lixo = inicio;
+            NO_LISTA *lixo = inicio;
             inicio = inicio->prox;
             inicio->ant = NULL;
             if(tam == 1){
@@ -132,7 +150,7 @@ void remover(int cod){
             tam--;
         }else if(cod == tam-1){ // fim
            
-            NO *lixo = fim;
+            NO_LISTA *lixo = fim;
             fim->ant->prox = NULL;
             fim= fim->ant;
             //OUTRO MODO:
@@ -142,7 +160,7 @@ void remover(int cod){
             tam--;
         }else{
             //meio....
-            NO *aux = inicio;
+            NO_LISTA *aux = inicio;
         /*   for(cod){
                 aux = aux->prox;
             }  */ 
@@ -159,7 +177,7 @@ void remover(int cod){
 
 // Funcao para pesquisar produtos por categoria (tipo)
 void pesquisa(char* tipo){
-    NO * aux = inicio;
+    NO_LISTA * aux = inicio;
     int encontrado = 0;
     printf("\n== PRODUTOS DA CATEGORIA: %s ==\n\n", tipo);
     while(aux != NULL){
@@ -181,7 +199,7 @@ void pesquisa(char* tipo){
 
 // Funcao para pesquisar produtos dentro de um intervalo de preco
 void pesquisar_por_preco(float preco_min, float preco_max){
-    NO * aux = inicio;
+    NO_LISTA * aux = inicio;
     int encontrado = 0;
     printf("\n== PRODUTOS ENTRE R$ %.2f E R$ %.2f ==\n\n", preco_min, preco_max);
     while(aux != NULL){
@@ -229,7 +247,7 @@ int main() {
     char tipo[50];
     float preco_min, preco_max;
     int codigo_compra;
-    NO *produto_comprado;
+    NO_LISTA *produto_comprado;
 
     do {
         printf("\n====================================\n");
