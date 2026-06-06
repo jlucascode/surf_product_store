@@ -297,4 +297,4 @@ Desenvolvido como material de estudo em estruturas de dados.
 
 ---
 
-**Última atualização**: Maio de 2026
+**Última atualização**: Junho de 2026
