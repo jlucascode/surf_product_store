@@ -40,7 +40,6 @@ typedef struct NO_FILA{
 
 NO_FILA *inicio_fila = NULL;
 NO_FILA *fim_fila  = NULL;
-int tam = 0;
 
 void add(int code_product, char * tipo_produto, char * descricao, float preco){
    
@@ -54,43 +53,36 @@ void add(int code_product, char * tipo_produto, char * descricao, float preco){
         novo->prox = NULL;
         novo->ant = NULL;
 
-        //tratar como inserir 
-
-        if(inicio == NULL){ //lista vazia
-            //operacao de encaixe
+        if(inicio == NULL){
             inicio = novo;
             fim = novo;
             tam++;
-        }else{ // lista nao esta vazia...
+        }else{
         
-            if(novo-> preco < inicio -> preco ){ // caso do inicio
+            if(novo->preco < inicio->preco){
                 novo->prox = inicio;
                 inicio->ant = novo;
                 inicio = novo;
                 tam++;
 
-            }else if(novo -> preco > fim-> preco){ //caso do fim
+            }else if(novo->preco > fim->preco){
                 fim->prox = novo;
                 novo->ant = fim;
                 fim = novo;
                 tam++;
             }else{
-                //meio ...
                 NO_LISTA* aux = inicio;
                 while(aux->prox != NULL && aux->preco <= novo->preco){
                     aux = aux->prox;
                 }
                 novo->prox = aux;
-                novo->ant = aux -> ant;
+                novo->ant = aux->ant;
                 aux->ant->prox = novo;
                 aux->ant = novo;
                 tam++;
             }
-            //printf("=============================\n");
         }
-    }/*else{
-        printf("Preco invalido! Isso aqui e uma lista!");
-    }*/
+    }
 }
 
 void imprimir(){
@@ -106,30 +98,26 @@ void imprimir(){
     }
 }
 
-// Funcao para comprar um produto atraves do codigo - Remove da lista e retorna os dados
 NO_LISTA* comprar(int code_product){
     NO_LISTA *aux = inicio;
     
-    // Procura o produto pelo codigo
     while(aux != NULL){
         if(aux->code_product == code_product){
-            // Encontrou o produto, agora remove da lista
-            if(aux == inicio && aux == fim){ // unico elemento
+            if(aux == inicio && aux == fim){
                 inicio = NULL;
                 fim = NULL;
-            }else if(aux == inicio){ // primeiro elemento
+            }else if(aux == inicio){
                 inicio = aux->prox;
                 inicio->ant = NULL;
-            }else if(aux == fim){ // ultimo elemento
+            }else if(aux == fim){
                 fim = aux->ant;
                 fim->prox = NULL;
-            }else{ // elemento no meio
+            }else{
                 aux->ant->prox = aux->prox;
                 aux->prox->ant = aux->ant;
             }
             
             tam--;
-            // Retorna o no removido (sem liberar memoria, pois sera usada)
             aux->prox = NULL;
             aux->ant = NULL;
             return aux;
@@ -137,7 +125,6 @@ NO_LISTA* comprar(int code_product){
         aux = aux->prox;
     }
     
-    // Produto nao encontrado
     return NULL;
 }
 
@@ -145,33 +132,29 @@ void remover(int cod){
 
     if(cod >= 0 && cod < tam){
 
-        if(cod == 0){ //inicio
+        if(cod == 0){
             NO_LISTA *lixo = inicio;
             inicio = inicio->prox;
-            inicio->ant = NULL;
             if(tam == 1){
                fim = NULL;
+            }else{
+               inicio->ant = NULL;
             }
             free(lixo);
             tam--;
-        }else if(cod == tam-1){ // fim
+        }else if(cod == tam-1){
            
             NO_LISTA *lixo = fim;
             fim->ant->prox = NULL;
-            fim= fim->ant;
-            //OUTRO MODO:
-            // lixo->ant->prox=NULL;
-            // fim=lixo->ant;
+            fim = fim->ant;
             free(lixo);
             tam--;
         }else{
-            //meio....
             NO_LISTA *aux = inicio;
-        /*   for(cod){
+            for(int i = 0; i < cod; i++){
                 aux = aux->prox;
-            }  */ 
-           
-            aux->ant->prox= aux->prox;
+            }
+            aux->ant->prox = aux->prox;
             aux->prox->ant = aux->ant;
             free(aux);
             tam--;
@@ -180,8 +163,6 @@ void remover(int cod){
 
 }
 
-
-// Funcao para pesquisar produtos por categoria (tipo)
 void pesquisa(char* tipo){
     NO_LISTA * aux = inicio;
     int encontrado = 0;
@@ -203,7 +184,6 @@ void pesquisa(char* tipo){
     printf("Total de produtos encontrados: %d\n\n", encontrado);
 }
 
-// Funcao para pesquisar produtos dentro de um intervalo de preco
 void pesquisar_por_preco(float preco_min, float preco_max){
     NO_LISTA * aux = inicio;
     int encontrado = 0;
@@ -225,8 +205,7 @@ void pesquisar_por_preco(float preco_min, float preco_max){
     printf("Total de produtos encontrados: %d\n\n", encontrado);
 }
 
-// Funcao para adicionar pedido a fila de entrega
-void adicionar_fila_entrega(NO_LISTA* produto, char* nome_cliente, char* cpf, char* cep, 
+void adicionar_fila_entrega(NO_LISTA* produto, char* nome_cliente, char* cpf, char* cep,
                             char* nome_rua, int numero_casa, char* complemento){
     
     NO_FILA *novo = malloc(sizeof(NO_FILA));
@@ -260,7 +239,6 @@ void adicionar_fila_entrega(NO_LISTA* produto, char* nome_cliente, char* cpf, ch
     }
 }
 
-// Funcao para remover da fila e simular entrega
 void remover_fila_entrega(){
     if(inicio_fila == NULL){
         printf("\n!!! FILA DE ENTREGA VAZIA !!!\n");
@@ -304,7 +282,6 @@ void remover_fila_entrega(){
     free(lixo);
 }
 
-// Funcao para exibir tamanho da fila de entrega
 int tamanho_fila_entrega(){
     int count = 0;
     NO_FILA *aux = inicio_fila;
@@ -315,9 +292,34 @@ int tamanho_fila_entrega(){
     return count;
 }
 
+void imprimir_fila_entrega(){
+    if(inicio_fila == NULL){
+        printf("\n!!! FILA DE ENTREGA VAZIA !!!\n");
+        return;
+    }
+    
+    NO_FILA *aux = inicio_fila;
+    int i = 1;
+    printf("== FILA DE ENTREGA ==\n\n");
+    while(aux != NULL){
+        printf("--- Pedido %d ---\n", i);
+        printf("Codigo do produto: %d\n", aux->code_product);
+        printf("Tipo: %s\n", aux->tipo_produto);
+        printf("Descricao: %s\n", aux->descricao);
+        printf("Preco: R$ %.2f\n", aux->preco);
+        printf("Cliente: %s\n", aux->nome_cliente);
+        printf("CPF: %s\n", aux->cpf);
+        printf("Endereco: %s, %d - %s\n", aux->nome_rua, aux->numero_casa, aux->complemento);
+        printf("CEP: %s\n", aux->cep);
+        printf("-----------------------------\n");
+        aux = aux->prox;
+        i++;
+    }
+    printf("Total de pedidos na fila: %d\n\n", tamanho_fila_entrega());
+}
+
 int main() {
    
-    // 50 produtos para venda - Recebimento de Produtos
     add(1001, "Parafina", "Parafina Premium Surfwax", 19.90);
     add(1002, "Parafina", "Parafina Cold Water", 22.50);
     add(1003, "Leash", "Leash 6ft Standard", 35.00);
@@ -338,8 +340,6 @@ int main() {
     add(1018, "Leash", "Leash Importada", 50.00);
     add(1019, "Quilha", "Quilha Quad", 90.00);
     add(1020, "Deck", "Deck Ultimate Grip", 85.00);
-    
-    // 30 produtos adicionais
     add(1021, "Parafina", "Parafina Ice Cold", 23.00);
     add(1022, "Parafina", "Parafina Mr. Zog", 25.50);
     add(1023, "Leash", "Leash Kevlar 6ft", 48.00);
@@ -371,85 +371,109 @@ int main() {
     add(1049, "Parafina", "Parafina Ultimate", 27.00);
     add(1050, "Leash", "Leash Flex Pro", 47.00);
 
-    // PARTE 2: TESTES
-    printf("\n\n");
-    printf("========================================\n");
-    printf("ETAPA 1: RECEBIMENTO DE PRODUTOS\n");
-    printf("========================================\n");
-    printf("Total de produtos adicionados ao estoque: %d\n", tam);
-    imprimir();
-    
-    printf("\n\n");
-    printf("========================================\n");
-    printf("ETAPA 2: PROCESSO DE REVENDA (COMPRA)\n");
-    printf("Simulando visualizacao/compra de 20 produtos distintos\n");
-    printf("========================================\n\n");
-    
-    // Array com 20 codigos de produtos para comprar
-    int codigos_compra[20] = {1001, 1003, 1005, 1007, 1009, 1011, 1013, 1015, 1017, 1019, 
-                              1021, 1023, 1025, 1027, 1029, 1031, 1033, 1035, 1037, 1039};
-    
+    int opcao;
+    char tipo[50];
+    float preco_min, preco_max;
+    int codigo_compra;
     NO_LISTA *produto_comprado;
-    
-    for(int i = 0; i < 20; i++){
-        produto_comprado = comprar(codigos_compra[i]);
-        if(produto_comprado != NULL){
-            printf("\n--- COMPRA %d ---\n", i+1);
-            printf("Codigo: %d | Tipo: %s | Descricao: %s | Preco: R$ %.2f\n", 
-                   produto_comprado->code_product, 
-                   produto_comprado->tipo_produto,
-                   produto_comprado->descricao, 
-                   produto_comprado->preco);
-            printf("Status: COMPRA REALIZADA\n");
-            
-            // Aguardar dados do cliente para criar pedido de entrega
-            char nome_cliente[100];
-            char cpf[20];
-            char cep[20];
-            char nome_rua[100];
-            int numero;
-            char complemento[100];
-            
-            printf("Digite nome do cliente: ");
-            scanf(" %[^\n]", nome_cliente);
-            printf("Digite CPF (formato xxx.xxx.xxx-xx): ");
-            scanf(" %[^\n]", cpf);
-            printf("Digite CEP (somente numeros): ");
-            scanf(" %[^\n]", cep);
-            printf("Digite nome da rua: ");
-            scanf(" %[^\n]", nome_rua);
-            printf("Digite numero da casa: ");
-            scanf("%d", &numero);
-            printf("Digite complemento (apto, bloco, etc): ");
-            scanf(" %[^\n]", complemento);
-            
-            // Adicionar a fila de entrega
-            adicionar_fila_entrega(produto_comprado, nome_cliente, cpf, cep, nome_rua, numero, complemento);
-            
-            free(produto_comprado);
-            printf("Pedido adicionado a fila de entrega!\n");
+    char nome_cliente[100];
+    char cpf[20];
+    char cep[20];
+    char nome_rua[100];
+    int numero;
+    char complemento[100];
+
+    printf("\n====================================\n");
+    printf("   TATI SURF CO. - LOJA DE SURF\n");
+    printf("====================================\n");
+    printf("Total de produtos em estoque: %d\n\n", tam);
+
+    do {
+        printf("\n====================================\n");
+        printf("   TATI SURF CO. - MENU PRINCIPAL\n");
+        printf("====================================\n");
+        printf("1. Ver produtos disponiveis\n");
+        printf("2. Ver produtos por categoria\n");
+        printf("3. Ver produtos por intervalo de preco\n");
+        printf("4. Comprar produto\n");
+        printf("5. Ver fila de entrega\n");
+        printf("6. Entregar proximo produto da fila\n");
+        printf("7. Encerrar atendimento\n");
+        printf("\nEscolha uma opcao: ");
+        scanf("%d", &opcao);
+        
+        switch(opcao) {
+            case 1:
+                imprimir();
+                break;
+                
+            case 2:
+                printf("\nDigite a categoria (Parafina, Leash, Quilha, Deck): ");
+                scanf("%s", tipo);
+                pesquisa(tipo);
+                break;
+                
+            case 3:
+                printf("\nDigite o preco minimo: ");
+                scanf("%f", &preco_min);
+                printf("Digite o preco maximo: ");
+                scanf("%f", &preco_max);
+                pesquisar_por_preco(preco_min, preco_max);
+                break;
+                
+            case 4:
+                printf("\nDigite o codigo do produto a comprar: ");
+                scanf("%d", &codigo_compra);
+                produto_comprado = comprar(codigo_compra);
+                if(produto_comprado != NULL) {
+                    printf("\n=== COMPRA REALIZADA ===\n");
+                    printf("Codigo: %d\n", produto_comprado->code_product);
+                    printf("Tipo: %s\n", produto_comprado->tipo_produto);
+                    printf("Descricao: %s\n", produto_comprado->descricao);
+                    printf("Preco: R$ %.2f\n", produto_comprado->preco);
+                    printf("Produtos restantes em estoque: %d\n", tam);
+                    
+                    printf("\n--- DADOS PARA ENTREGA ---\n");
+                    printf("Digite nome do cliente: ");
+                    scanf(" %[^\n]", nome_cliente);
+                    printf("Digite CPF (formato xxx.xxx.xxx-xx): ");
+                    scanf(" %[^\n]", cpf);
+                    printf("Digite CEP (somente numeros): ");
+                    scanf(" %[^\n]", cep);
+                    printf("Digite nome da rua: ");
+                    scanf(" %[^\n]", nome_rua);
+                    printf("Digite numero da casa: ");
+                    scanf("%d", &numero);
+                    printf("Digite complemento (apto, bloco, etc): ");
+                    scanf(" %[^\n]", complemento);
+                    
+                    adicionar_fila_entrega(produto_comprado, nome_cliente, cpf, cep, nome_rua, numero, complemento);
+                    printf("\nPedido adicionado a fila de entrega com sucesso!\n");
+                    
+                    free(produto_comprado);
+                } else {
+                    printf("\nProduto com codigo %d nao encontrado!\n", codigo_compra);
+                }
+                break;
+                
+            case 5:
+                imprimir_fila_entrega();
+                break;
+                
+            case 6:
+                remover_fila_entrega();
+                break;
+                
+            case 7:
+                printf("\nObrigado por usar o sistema TATI SURF CO.!\n");
+                printf("Produtos restantes em estoque: %d\n", tam);
+                printf("Pedidos na fila de entrega: %d\n\n", tamanho_fila_entrega());
+                break;
+                
+            default:
+                printf("\nOpcao invalida! Tente novamente.\n");
         }
-    }
-    
-    printf("\n\nProdutos restantes em estoque: %d\n", tam);
-    printf("Total de pedidos na fila de entrega: %d\n\n", tamanho_fila_entrega());
-    
-    printf("\n\n");
-    printf("========================================\n");
-    printf("ETAPA 3: ENTREGA E PAGAMENTO\n");
-    printf("Simulando entrega de 15 produtos vendidos\n");
-    printf("========================================\n\n");
-    
-    for(int i = 0; i < 15; i++){
-        printf("\n[ENTREGA %d]\n", i+1);
-        remover_fila_entrega();
-        printf("Produto entregue e pagamento realizado!\n");
-    }
-    
-    printf("\n\nPedidos restantes na fila: %d\n\n", tamanho_fila_entrega());
-    printf("========================================\n");
-    printf("TESTE CONCLUIDO COM SUCESSO!\n");
-    printf("========================================\n\n");
-    
-    return 0;
+    } while(opcao != 7);
+
+ return 0;
 }
