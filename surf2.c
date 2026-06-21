@@ -46,6 +46,7 @@ void add(int code_product, char * tipo_produto, char * descricao, float preco){
     if(preco >= 0){
 
         NO_LISTA * novo = malloc(sizeof(NO_LISTA));
+        if(novo == NULL) return;
         novo->code_product = code_product;
         novo->tipo_produto = tipo_produto;
         novo->descricao = descricao;
@@ -77,7 +78,11 @@ void add(int code_product, char * tipo_produto, char * descricao, float preco){
                 }
                 novo->prox = aux;
                 novo->ant = aux->ant;
-                aux->ant->prox = novo;
+                if(aux->ant != NULL){
+                    aux->ant->prox = novo;
+                }else{
+                    inicio = novo;
+                }
                 aux->ant = novo;
                 tam++;
             }
@@ -209,24 +214,19 @@ void adicionar_fila_entrega(NO_LISTA* produto, char* nome_cliente, char* cpf, ch
                             char* nome_rua, int numero_casa, char* complemento){
     
     NO_FILA *novo = malloc(sizeof(NO_FILA));
+    if(novo == NULL) return;
+   
     novo->code_product = produto->code_product;
-    novo->tipo_produto = malloc(strlen(produto->tipo_produto) + 1);
-    strcpy(novo->tipo_produto, produto->tipo_produto);
-    novo->descricao = malloc(strlen(produto->descricao) + 1);
-    strcpy(novo->descricao, produto->descricao);
+    novo->tipo_produto = produto->tipo_produto;
+    novo->descricao = produto->descricao;
     novo->preco = produto->preco;
-    
-    novo->nome_cliente = malloc(strlen(nome_cliente) + 1);
-    strcpy(novo->nome_cliente, nome_cliente);
-    novo->cpf = malloc(strlen(cpf) + 1);
-    strcpy(novo->cpf, cpf);
-    novo->cep = malloc(strlen(cep) + 1);
-    strcpy(novo->cep, cep);
-    novo->nome_rua = malloc(strlen(nome_rua) + 1);
-    strcpy(novo->nome_rua, nome_rua);
+
+    novo->nome_cliente = nome_cliente;
+    novo->cpf = cpf;
+    novo->cep = cep;
+    novo->nome_rua = nome_rua;
     novo->numero_casa = numero_casa;
-    novo->complemento = malloc(strlen(complemento) + 1);
-    strcpy(novo->complemento, complemento);
+    novo->complemento = complemento;
     
     novo->prox = NULL;
     
@@ -272,13 +272,6 @@ void remover_fila_entrega(){
         inicio_fila = inicio_fila->prox;
     }
     
-    free(lixo->tipo_produto);
-    free(lixo->descricao);
-    free(lixo->nome_cliente);
-    free(lixo->cpf);
-    free(lixo->cep);
-    free(lixo->nome_rua);
-    free(lixo->complemento);
     free(lixo);
 }
 
