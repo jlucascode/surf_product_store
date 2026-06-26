@@ -78,7 +78,7 @@ void add(int code_product, char * tipo_produto, char * descricao, float preco){
                 }
                 novo->prox = aux;
                 novo->ant = aux->ant;
-                if(aux->ant != NULL){
+if(aux->ant != NULL){
                     aux->ant->prox = novo;
                 }else{
                     inicio = novo;
