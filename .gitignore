@@ -1,0 +1,11 @@
+# Compiled binaries
+*.exe
+*.o
+*.obj
+*.out
+
+# Compiled artifacts
+*.ilk
+*.pdb
+*.exp
+*.lib
